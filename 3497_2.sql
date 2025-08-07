@@ -1,0 +1,33 @@
+
+Table: UserActivity
+
++------------------+---------+
+| Column Name      | Type    |
++------------------+---------+
+| user_id          | int     |
+| activity_date    | date    |
+| activity_type    | varchar |
+| activity_duration| int     |
++------------------+---------+
+(user_id, activity_date, activity_type) is the unique key for this table.
+activity_type is one of ('free_trial', 'paid', 'cancelled').
+activity_duration is the number of minutes the user spent on the platform that day.
+Each row represents a users activity on a specific date.
+A subscription service wants to analyze user behavior patterns. The company
+offers a 7-day free trial, after which users can subscribe to a paid plan or cancel. Write a solution to:
+
+Find users who converted from free trial to paid subscription
+Calculate each users average daily activity duration during their free
+trial period (rounded to 2 decimal places)
+Calculate each users average daily activity duration during their paid subscription
+period (rounded to 2 decimal places)
+Return the result table ordered by user_id in ascending order.
+
+
+SELECT user_id,
+ROUND(AVG(IF(activity_type = 'free_trial', activity_duration * 1.0, NULL)), 2) AS trial_avg_duration,
+ROUND(AVG(IF(activity_type = 'paid', activity_duration * 1.0, NULL)), 2) AS paid_avg_duration
+FROM UserActivity
+GROUP BY user_id
+HAVING paid_avg_duration > 0
+ORDER BY user_id
